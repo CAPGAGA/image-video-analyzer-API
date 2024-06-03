@@ -10,7 +10,7 @@ class UploadedFile(Base):
     __tablename__ = 'uploaded_files'
 
     id = Column(Integer, primary_key=True, nullable=False, index=True)
-    result_id = Column(Integer, ForeignKey('analysis_results.id'))
+    result_id = Column(Integer, ForeignKey('analysis_results.id'), default=None)
     file_name = Column(String, unique=True)
     uploaded = Column(DateTime(), server_default=func.now())
     result = relationship("Result", back_populates='uploaded_files')

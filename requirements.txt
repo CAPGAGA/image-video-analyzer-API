@@ -1,0 +1,8 @@
+fastapi
+ffmpeg-python
+uvicorn
+flake8
+sqlalchemy
+databases[postgresql]
+asyncpg
+pydantic

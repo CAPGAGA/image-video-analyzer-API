@@ -18,3 +18,10 @@ engine = create_async_engine(DATABASE_URL, echo=True, future=True)
 Base: DeclarativeMeta = declarative_base()
 # async session
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False, future=True)
+
+async def get_db():
+    db = async_session()
+    try:
+        yield db
+    finally:
+        await db.close()

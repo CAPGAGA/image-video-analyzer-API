@@ -6,3 +6,4 @@ sqlalchemy
 databases[postgresql]
 asyncpg
 pydantic
+onnxruntime

@@ -13,7 +13,6 @@ class UploadedFile(Base):
     result_id = Column(Integer, ForeignKey('analysis_results.id'), default=None)
     file_name = Column(String, unique=True)
     uploaded = Column(DateTime(), server_default=func.now())
-    result = relationship("Result", back_populates='uploaded_files')
 
 class Results(Base):
 
@@ -23,5 +22,3 @@ class Results(Base):
     file_id = Column(Integer, ForeignKey('uploaded_files.id'))
     result = Column(String)
     created = Column(DateTime(), onupdate=func.now())
-
-    from_file = relationship("UploadedFile", back_populates='from_file')

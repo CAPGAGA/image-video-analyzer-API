@@ -18,7 +18,7 @@ async def create_result(db: async_session, file_id:int, result: str) -> dict:
 async def get_result(db: async_session, result_id: int) -> dict:
     async with db as session:
         result = await session.execute(select(models.Results).where(models.Results.id == result_id))
-        response = result.scalars().fiirst()
+        response = result.scalars().first()
         return response
 
 # delete result

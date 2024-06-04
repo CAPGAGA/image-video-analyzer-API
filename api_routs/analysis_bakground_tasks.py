@@ -9,7 +9,7 @@ import glob
 import asyncio
 import json
 
-async def analyze_video(request, video_name, db_file_id):
+async def analyze_video(request, video_name, db_file_id, db):
 
     video_path = os.path.join(MEDIA_PATH, video_name)
     temp_files_path = os.path.join(TEMP_FILES, video_name)
@@ -33,7 +33,8 @@ async def analyze_video(request, video_name, db_file_id):
     tasks_analysis = [asyncio.create_task(request.app.ml_model(process_image)) for process_image in process_images]
     labels = await asyncio.gather(*tasks_analysis)
 
-    print(labels)
+    for label in labels:
+        await create_result(db, db_file_id, label)
 
     for frame_file in frame_files:
         os.remove(frame_file)

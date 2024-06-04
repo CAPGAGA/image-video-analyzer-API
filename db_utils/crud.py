@@ -17,20 +17,21 @@ async def create_result(db: async_session, file_id:int, result: str) -> dict:
 # get result from db by result's id
 async def get_result(db: async_session, result_id: int) -> dict:
     async with db as session:
-        result = await session.execute(select(models.Results).where(models.Results.id == result_id))
-        response = result.scalars().first()
+        result = await session.execute(select(models.Results).where(models.Results.file_id == result_id))
+        response = result.scalars().all()
         return response
 
 # delete result
 async def delete_result(db: async_session, result_id:int) -> dict:
     async with db as session:
-        result = await session.execute(select(models.Results).where(models.Results.id == result_id))
-        result = result.scalars().first()
-        if result is None:
-            return {'result': 'not found'}
-        await session.delete(result)
+        results = await session.execute(select(models.Results).where(models.Results.file_id == result_id))
+        results = results.scalars().all()
+        if not results:
+            return {'results': 'not found'}
+        for result in results:
+            await session.delete(result)
         await session.commit()
-        return {'result': 'deleted'}
+        return {'results': 'deleted'}
 
 # add new file
 async def create_file(db: async_session, file_name: str) -> dict:

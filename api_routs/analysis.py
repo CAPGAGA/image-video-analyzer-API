@@ -33,8 +33,8 @@ async def post_media(request: Request, background_tasks: BackgroundTasks, media:
     with open(f'media/{file_name}.{file_extension}', 'wb+') as dest:
         dest.write(media.file.read())
     db_file_id = await crud.create_file(db, f'{file_name}.{file_extension}')
-    background_tasks.add_task(analyze_video, request, f'{file_name}.{file_extension}', db_file_id)
-    return Response(status_code=200, content=json.dumps({'created_file': db_file_id}))
+    background_tasks.add_task(analyze_video, request, f'{file_name}.{file_extension}', db_file_id, db)
+    return Response(status_code=200, content=json.dumps({'requestId': db_file_id}))
 
 @router.delete("/{requestId}/")
 async def delete_result(requestId: int, db: Session = Depends(get_db)) -> Response:

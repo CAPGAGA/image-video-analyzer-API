@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  api:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - PYTHONUNBUFFERED=0
+      - PYTHONPATH=/api
+    command: bash -c 'uvicorn api:app --host 0.0.0.0 --port 80'
+    depends_on:
+      - db
+    ports:
+      - "80:80"
+    expose:
+      - 80
+    env_file: ./docker.env
+    networks:
+      - api_network
+  db:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    env_file: ./docker.env
+    networks:
+      - api_network
+
+
+volumes:
+  postgres_data:
+
+networks:
+  api_network:
+    driver: bridge

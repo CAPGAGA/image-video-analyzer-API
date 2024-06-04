@@ -1,7 +1,5 @@
 from .db import async_session
 from sqlalchemy.future import select
-import random
-import string
 
 from . import models
 

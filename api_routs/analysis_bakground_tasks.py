@@ -24,17 +24,16 @@ async def analyze_video(request, video_name, db_file_id, db):
     frame_files = glob.glob(os.path.join(temp_files_path, 'frame_*.png'))
     frame_files.sort()
 
-    # loop = asyncio.get_event_loop()
-    # executor = ThreadPoolExecutor()
-
     tasks = [asyncio.create_task(preprocess_image(frame_file)) for frame_file in frame_files]
     process_images = await asyncio.gather(*tasks)
 
     tasks_analysis = [asyncio.create_task(request.app.ml_model(process_image)) for process_image in process_images]
     labels = await asyncio.gather(*tasks_analysis)
 
-    for label in labels:
-        await create_result(db, db_file_id, label)
+    for index, label in enumerate(labels):
+        if label:
+            label[0]['frame'] = index
+            await create_result(db, db_file_id, str(label[0]))
 
     for frame_file in frame_files:
         os.remove(frame_file)

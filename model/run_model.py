@@ -14,8 +14,14 @@ async def run_model(data):
     input_name = session.get_inputs()[0].name
 
     result = session.run(None, {input_name: data})
-    predict_class = np.argmax(result[0])
-    predict_label = labels[str(predict_class)]
 
-    return predict_label
+    probabilities = result[0][0]
+    threshold = 0.80
+
+    filtered_classes = [
+        {'class': labels[str(i)], 'probability': float(probability)}
+        for i, probability in enumerate(probabilities) if probability > threshold
+    ]
+    print(filtered_classes)
+    return filtered_classes
 

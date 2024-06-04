@@ -39,5 +39,5 @@ async def create_file(db: async_session, file_name: str) -> dict:
         session.add(new_file)
         await session.commit()
         await session.refresh(new_file)
-        response = new_file.scalars().first()
+        response = new_file.id
         return response

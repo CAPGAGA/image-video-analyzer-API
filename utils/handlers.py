@@ -1,6 +1,8 @@
 import hashlib
+import uuid
+import time
 
 # generate random filename
-async def generate_hash_key(file_name:str) -> str:
-    key = hashlib.sha256(str(file_name).encode()).hexdigest()
+async def generate_hash_key() -> str:
+    key = f"{int(time.time())}_{uuid.uuid4().hex}"
     return str(key)

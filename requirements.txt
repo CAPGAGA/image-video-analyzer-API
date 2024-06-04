@@ -7,3 +7,7 @@ databases[postgresql]
 asyncpg
 pydantic
 onnxruntime
+opencv-python
+numpy
+pillow
+torchvision

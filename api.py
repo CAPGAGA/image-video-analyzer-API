@@ -21,30 +21,23 @@ logger = logging.getLogger(__name__)
 
 
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    async with engine.begin() as conn:
+        await conn.run_sync(models.Base.metadata.create_all)
     app.ml_model = run_model.run_model
     yield
     del app.ml_model
 
-# init routs
+# init app
 app = FastAPI(lifespan=lifespan)
 
 # add routs
 app.include_router(analysis.router)
 
 
-@app.on_event('startup')
-async def init_api():
 
-    if not os.path.exists(MEDIA_PATH):
-        os.makedirs(MEDIA_PATH)
-
-    if not os.path.exists(TEMP_FILES):
-        os.makedirs(TEMP_FILES)
-
-    async with engine.begin() as conn:
-        await conn.run_sync(models.Base.metadata.create_all)
 
 
 
